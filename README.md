@@ -17,6 +17,8 @@ class MyParagraph extends HTMLElement {
     async connectedCallback() {
         const $host = await this.$host;
         $host.slot().text($host.attr('msg'));
+        $host.find('p').css('background-color', 'red');
+        $host.find('p > b').text('Updated with jQuery');
     }
 }
 customElements.define('my-paragraph', MyParagraph);
@@ -38,6 +40,8 @@ The html might look like:
         <p>
             <slot name="my-text">My default text</slot>
         </p>
+        <br/>
+        <b></b>
     </template>
 
     <my-paragraph msg="this is message is from my-paragraph">
