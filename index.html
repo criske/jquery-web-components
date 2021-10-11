@@ -21,10 +21,12 @@
         </style>
         <p>
             <slot name="my-text">My default text</slot>
+            <br/>
+            <b></b>
         </p>
     </template>
 
-    <my-paragraph msg="this is message is from my-paragraph">
+    <my-paragraph msg="this is message is from my-paragraph attribute">
         <span slot="my-text" id="slot-id"></span>
     </my-paragraph>
 </body>

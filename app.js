@@ -9,6 +9,7 @@ class MyParagraph extends HTMLElement {
         const $host = await this.$host;
         $host.slot().text($host.attr('msg'));
         $host.find('p').css('background-color', 'red');
+        $host.find('p > b').text('Updated with jQuery');
     }
 
 }
@@ -21,16 +22,6 @@ HTMLElement.prototype.$template = function (template, shadowInit = { mode: 'open
         $host.ready(() => resolve($host))
     });
 };
-
-const $ = jQuery = new Proxy(jQuery, {
-    apply: function (target, thisArg, args) {
-        return target(...args);
-    },
-    get: function (target, prop, receiver) {
-        return Reflect.get(...arguments);
-    }
-});
-
 
 jQuery.fn.template = function (template, webComponent, shadowInit = { mode: 'open' }) {
     let $template = $(template);
