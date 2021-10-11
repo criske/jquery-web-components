@@ -8,7 +8,6 @@ class MyParagraph extends HTMLElement {
     async connectedCallback() {
         const $host = await this.$host;
         $host.slot().text($host.attr('msg'));
-        $('<p></p>').slot();
     }
 
 }
