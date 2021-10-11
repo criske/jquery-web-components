@@ -17,6 +17,7 @@ class MyParagraph extends HTMLElement {
     async connectedCallback() {
         const $host = await this.$host;
         $host.slot().text($host.attr('msg'));
+        $host.find('p').css('background-color', 'red');
     }
 }
 customElements.define('my-paragraph', MyParagraph);
