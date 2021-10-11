@@ -10,6 +10,8 @@ class MyParagraph extends HTMLElement {
         $host.slot().text($host.attr('msg'));
         $host.find('p').css('background-color', 'red');
         $host.find('p > b').text('Updated with jQuery');
+        const b = $host.find('p').find('b');
+        b.css('background-color', 'green');
     }
 
 }
