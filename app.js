@@ -51,18 +51,21 @@ jQuery.fn.slot = function (query) {
     throw new Error('Current element doesn\'t have a shadowroot!');
 };
 
-const $find = jQuery.fn.find;
-jQuery.fn.extend({
-    find: function () {
-        let result = $find.apply(this, arguments);
-        if (result.length === 0) {
-            const shadowRoot = this.get(0).shadowRoot;
-            if (shadowRoot) {
-                const shadowResult = shadowRoot.querySelectorAll(...arguments);
-                result = $(shadowResult);
+(function(jQuery){
+    const $find = jQuery.fn.find;
+    jQuery.fn.extend({
+        find: function () {
+            let result = $find.apply(this, arguments);
+            if (result.length === 0) {
+                const shadowRoot = this.get(0).shadowRoot;
+                if (shadowRoot) {
+                    const shadowResult = shadowRoot.querySelectorAll(...arguments);
+                    result = $(shadowResult);
+                }
             }
+            return result;
         }
-        return result;
-    }
-});
+    });
+})(jQuery);
+
 
