@@ -52,4 +52,40 @@ The html might look like:
 </body>
 ```
 
-_work in progress_
+## Extending native HTML elements ##
+
+Using jQuery with extending native HTML elements is straightforward:
+
+```javascript
+class FancyButton extends HTMLButtonElement {
+
+    constructor() {
+        super();
+        $(this).css('background-color', 'yellow').text("Fancy Button");
+    }
+    
+}
+customElements.define('fancy-button', FancyButton, { extends: 'button' });
+```
+Creating manually:
+```javascript
+const button = $('<button is="fancy-button">')
+    .text('Fency Button')
+    .click(() => alert("Hello from document"));
+$('body').append(button);
+```
+
+Accesing them from a custom element template:
+```javascript
+//...
+async connectedCallback() {
+    const $host = await this.$host;
+    $host.find('button[is=fancy-button]')
+        .css('background-color', 'green')
+        .text('Fancy Template button')
+        .click(() => {
+            alert('Hello from template');
+        });
+}
+```
+

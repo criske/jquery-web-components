@@ -12,12 +12,38 @@ class MyParagraph extends HTMLElement {
         $host.find('p > b').text('Updated with jQuery');
         const b = $host.find('p').find('b');
         b.css('background-color', 'green');
+        $host.find('button[is=fancy-button]')
+            .css('background-color', 'green')
+            .text('Fancy Template button').click(() => {
+                alert('Hello from template');
+            });
+
     }
 
 }
+
+class FancyButton extends HTMLButtonElement {
+
+    constructor() {
+        super();
+        $(this).css('background-color', 'yellow').text("Fancy Button");
+    }
+}
+
 customElements.define('my-paragraph', MyParagraph);
+customElements.define('fancy-button', FancyButton, { extends: 'button' });
+
+$(document).ready(() => {
+    const button = $('<button is="fancy-button">')
+        .text('Fency Button')
+        .click(() => alert("Hello from document"));
+    $('body').append(button);
+});
 
 
+/*
+************************************API***************************************
+*/
 HTMLElement.prototype.$template = function (template) {
     const $host = $(document).template(template, this);
     return new Promise(resolve => {
@@ -28,7 +54,7 @@ HTMLElement.prototype.$template = function (template) {
 jQuery.fn.template = function (template, webComponent) {
     let $template = $(template);
     $template = $template.prop('tagName') !== 'TEMPLATE'
-        ? $('<template>' + template + '</template>')
+        ? $('template').append(template)
         : $template;
     const node = $template.get(0).content.cloneNode(true);
     const shadowRoot = webComponent.attachShadow({ mode: 'open' });
@@ -51,7 +77,7 @@ jQuery.fn.slot = function (query) {
     throw new Error('Current element doesn\'t have a shadowroot!');
 };
 
-(function(jQuery){
+(function (jQuery) {
     const $find = jQuery.fn.find;
     jQuery.fn.extend({
         find: function () {
