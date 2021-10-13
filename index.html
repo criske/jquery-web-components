@@ -20,10 +20,12 @@
             }
         </style>
         <p>
+            <my-other-component></my-other-component>
             <slot name="my-text">My default text</slot>
             <br/>
             <b></b>
             <button is="fancy-button"></button>
+            <my-component></my-component>
         </p>
        
     </template>
@@ -31,6 +33,15 @@
     <my-paragraph msg="this is message is from my-paragraph attribute">
         <span slot="my-text" id="slot-id"></span>
     </my-paragraph>
+
+    <my-component></my-component>
+    <my-other-component></my-other-component>
+    <my-component></my-component>
+    <my-other-component></my-other-component>
+    <my-component></my-component>
+    <my-component></my-component>
+    <my-other-component></my-other-component>
+    <my-other-component></my-other-component>
 
     <!-- <button is="fancy-button">Fancy button!</button> -->
 </body>

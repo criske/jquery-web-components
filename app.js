@@ -1,3 +1,6 @@
+/*
+************************************API - PLAYGROUND***************************************
+*/
 class MyParagraph extends HTMLElement {
 
     constructor() {
@@ -8,7 +11,7 @@ class MyParagraph extends HTMLElement {
     async connectedCallback() {
         const $host = await this.$host;
         $host.slot().text($host.attr('msg'));
-        $host.find('p').css('background-color', 'red');
+        $host.find('p').css('background-color', '#FE9868');
         $host.find('p > b').text('Updated with jQuery');
         const b = $host.find('p').find('b');
         b.css('background-color', 'green');
@@ -30,6 +33,36 @@ class FancyButton extends HTMLButtonElement {
     }
 }
 
+
+class MyComponent extends HTMLElement {
+
+    constructor() {
+        super();
+        this.$host = $templateSources(this, './my-component.css', './my-component.html')
+            .then(template => this.$template(template));
+    }
+
+    async connectedCallback() {
+        const $host = await this.$host;
+        //...
+    }
+}
+
+class MyOtherComponent extends HTMLElement {
+
+    constructor() {
+        super();
+        this.$host = $templateSources(this, './my-component.css', './my-other-component.html')
+            .then(template => this.$template(template));
+    }
+
+    async connectedCallback() {
+        const $host = await this.$host;
+        //...
+    }
+}
+customElements.define('my-component', MyComponent);
+customElements.define('my-other-component', MyOtherComponent);
 customElements.define('my-paragraph', MyParagraph);
 customElements.define('fancy-button', FancyButton, { extends: 'button' });
 
@@ -46,15 +79,15 @@ $(document).ready(() => {
 */
 HTMLElement.prototype.$template = function (template) {
     const $host = $(document).template(template, this);
-    return new Promise(resolve => {
-        $host.ready(() => resolve($host))
-    });
+    return document.readyState === "loaded"
+        ? Promise.resolve($host)
+        : new Promise(resolve => { $host.ready(() => resolve($host)); });
 };
 
 jQuery.fn.template = function (template, webComponent) {
     let $template = $(template);
     $template = $template.prop('tagName') !== 'TEMPLATE'
-        ? $('template').append(template)
+        ? $('<template>' + template + '</template>')
         : $template;
     const node = $template.get(0).content.cloneNode(true);
     const shadowRoot = webComponent.attachShadow({ mode: 'open' });
@@ -93,5 +126,42 @@ jQuery.fn.slot = function (query) {
         }
     });
 })(jQuery);
+
+/**
+ * Takes the sources and concatenates them into one and then cache the result
+ * into element's constuctor. (serving as a static "class" property for future element instances).
+ * 
+ * @param {HTMLElement} element HTMLElement
+ * @param  {...String} sources File sources.
+ * @returns Promise or resolved promise if result is already cached.
+ */
+function $templateSources(element, ...sources) {
+    if (!(element instanceof HTMLElement)) {
+        throw new Error("element must a HTMLElement");
+    }
+    const ct = element.constructor;
+    if (!ct.cachedTemplateXHR) {
+        const fetchSrc = src => fetch(src)
+            .then(response => {
+                let result;
+                if (response.ok) {
+                    result = response.text();
+                    if (response.headers.get('Content-Type').toLocaleLowerCase().includes('text/css')) {
+                        //wrap with style tags;
+                        result = Promise.allSettled(['<style>', result, '</style>']).then(data => {
+                            return data.map(d => d.value).join('\n');
+                        });
+                    }
+                } else {
+                    result = Promise.reject(response);
+                }
+                return result;
+            })
+        ct.cachedTemplateXHR = Promise.allSettled(sources.map(fetchSrc)).then(results => {
+            return results.map(r => r.value).join('\n');
+        });
+    }
+    return ct.cachedTemplateXHR;
+}
 
 

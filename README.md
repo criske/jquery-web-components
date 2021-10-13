@@ -51,6 +51,27 @@ The html might look like:
     </my-paragraph>
 </body>
 ```
+## Loading templates from separate files.
+
+It's possible to write your css/html templates in a separate file. For this
+`$templateSources` can be used. These templates are loaded remotely only once per `HTMLElement` subclass,
+meaning that subsequent instances will share the same template.
+
+```javascript
+class MyComponent extends HTMLElement {
+
+    constructor() {
+        super();
+        this.$host = $templateSources(this, './my-component.css', './my-component.html')
+            .then(template => this.$template(template));
+    }
+
+    async connectedCallback() {
+        const $host = await this.$host;
+        //...
+    }
+}
+```
 
 ## Extending native HTML elements ##
 
