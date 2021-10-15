@@ -5,7 +5,7 @@ HTMLElement.prototype.$template = function (template) {
         : new Promise(resolve => { $host.ready(() => resolve($host)); });
 };
 
-HTMLElement.prototype.$templateSources = function(...sources) {
+HTMLElement.prototype.$templateSources = function (...sources) {
     return $templateSources(this, ...sources).then(template => this.$template(template));
 }
 
@@ -57,7 +57,7 @@ jQuery.fn.slot = function (query) {
  * into element's constuctor. (serving as a static "class" property for future element instances).
  * 
  * @param {HTMLElement} element HTMLElement
- * @param  {...String} sources File sources.
+ * @param  {...String | jQuery} sources File sources or JQuery element.
  * @returns Promise or resolved promise if result is already cached.
  */
 function $templateSources(element, ...sources) {
@@ -66,22 +66,30 @@ function $templateSources(element, ...sources) {
     }
     const ct = element.constructor;
     if (!ct.cachedTemplateXHR) {
-        const fetchSrc = src => fetch(src)
-            .then(response => {
-                let result;
-                if (response.ok) {
-                    result = response.text();
-                    if (response.headers.get('Content-Type').toLocaleLowerCase().includes('text/css')) {
-                        //wrap with style tags;
-                        result = Promise.allSettled(['<style>', result, '</style>']).then(data => {
-                            return data.map(d => d.value).join('\n');
-                        });
-                    }
-                } else {
-                    result = Promise.reject(response);
-                }
-                return result;
-            })
+        const fetchSrc = src => {
+            let resultPromise;
+            if (src instanceof jQuery) {
+                resultPromise = Promise.resolve($('<div>').append(src.clone()).html());
+            } else {
+                resultPromise = fetch(src)
+                    .then(response => {
+                        let result;
+                        if (response.ok) {
+                            result = response.text();
+                            if (response.headers.get('Content-Type').toLocaleLowerCase().includes('text/css')) {
+                                //wrap with style tags;
+                                result = Promise.allSettled(['<style>', result, '</style>']).then(data => {
+                                    return data.map(d => d.value).join('\n');
+                                });
+                            }
+                        } else {
+                            result = Promise.reject(response);
+                        }
+                        return result;
+                    });
+            }
+            return resultPromise;
+        };
         ct.cachedTemplateXHR = Promise.allSettled(sources.map(fetchSrc)).then(results => {
             return results.map(r => r.value).join('\n');
         });

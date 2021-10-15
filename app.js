@@ -48,8 +48,7 @@ class MyOtherComponent extends HTMLElement {
 
     constructor() {
         super();
-        this.$host = $templateSources(this, './my-component.css', './my-other-component.html')
-            .then(template => this.$template(template));
+        this.$host = this.$templateSources('./my-component.css', $('<div>This is my other component template kept in a separate file</div>'));
     }
 
     async connectedCallback() {
