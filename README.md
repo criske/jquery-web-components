@@ -62,8 +62,7 @@ class MyComponent extends HTMLElement {
 
     constructor() {
         super();
-        this.$host = $templateSources(this, './my-component.css', './my-component.html')
-            .then(template => this.$template(template));
+        this.$host = this.$templateSources('./my-component.css', './my-component.html');
     }
 
     async connectedCallback() {
