@@ -6,7 +6,7 @@ HTMLElement.prototype.$template = function (template) {
 };
 
 HTMLElement.prototype.$templateSources = function(...sources) {
-    return $templateSources(this, sources).then(template => this.$template(template));
+    return $templateSources(this, ...sources).then(template => this.$template(template));
 }
 
 jQuery.fn.template = function (template, webComponent) {
