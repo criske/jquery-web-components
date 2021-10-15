@@ -4,11 +4,11 @@ A simple way to integrate jquery with native components
 
 Download:
 [1.0.0](https://raw.githubusercontent.com/criske/jquery-web-components/main/jwc-1.0.0.js) 
-[1.0.0 minified](https://raw.githubusercontent.com/criske/jquery-web-components/main/jwc-1.0.0-min.js)
+[1.0.0-minified](https://raw.githubusercontent.com/criske/jquery-web-components/main/jwc-1.0.0-min.js)
 
 CDN (JSDELIVR)
 [1.0.0](https://cdn.jsdelivr.net/gh/criske/jquery-web-components@main/jwc-1.0.0.js) 
-[1.0.0 minified](https://cdn.jsdelivr.net/gh/criske/jquery-web-components@main/jwc-1.0.0-min.js)
+[1.0.0-minified](https://cdn.jsdelivr.net/gh/criske/jquery-web-components@main/jwc-1.0.0-min.js)
 
  - load a template, either by id or inline ` this.$template('<p>Inlined template</p>')` and store the promise into a member variable
    Note: a promise is needed because interally the template jQuery plugin ensuers that the document is ready.
