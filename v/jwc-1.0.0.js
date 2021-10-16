@@ -20,19 +20,26 @@ jQuery.fn.template = function (template, webComponent) {
     return $(shadowRoot.host);
 };
 
-jQuery.fn.slot = function (query) {
-    const shadowRoot = this.get(0).shadowRoot;
-    if (shadowRoot) {
-        const slots = shadowRoot.querySelectorAll(query || 'slot');
-        const allNodes = [];
-        slots.forEach(slot => {
-            slot.assignedNodes().forEach(node => {
-                allNodes.push(node);
+jQuery.fn.slot = function (queryOrElem, slotName) {
+    if (queryOrElem instanceof jQuery) {
+        if(slotName){
+            queryOrElem = queryOrElem.attr("slot", slotName);
+        }
+        return this.append(queryOrElem);
+    } else {
+        const shadowRoot = this.get(0).shadowRoot;
+        if (shadowRoot) {
+            const slots = shadowRoot.querySelectorAll(queryOrElem || 'slot');
+            const allNodes = [];
+            slots.forEach(slot => {
+                slot.assignedNodes().forEach(node => {
+                    allNodes.push(node);
+                });
             });
-        });
-        return $(allNodes);
+            return $(allNodes);
+        }
+        throw new Error('Current element doesn\'t have a shadowroot!');
     }
-    throw new Error('Current element doesn\'t have a shadowroot!');
 };
 
 (function (jQuery) {
