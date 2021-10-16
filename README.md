@@ -33,7 +33,7 @@ class MyParagraph extends HTMLElement {
 customElements.define('my-paragraph', MyParagraph);
 
 ```
-Unless is not targeting a slot, `jQuery.find()` could be used too instead of `slot()`. (jQuery doesn't support slot css queries).
+Unless is not targeting a slot, `jQuery.find()` should be used.
 
 The html might look like:
 ```html
@@ -58,6 +58,19 @@ The html might look like:
     </my-paragraph>
 </body>
 ```
+
+## Interacting with slots:
+
+Getting a slot:
+```javascript
+const slot = $host.slot('slot[name=my-slot]');
+```
+
+Adding an element to a slot:
+```javascript
+const div = $host.slot($('<div>'), "my-slot");
+```
+
 ## Loading templates from separate files.
 
 It's possible to write your css/html templates in a separate file. For this
