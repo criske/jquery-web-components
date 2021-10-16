@@ -21,24 +21,24 @@ jQuery.fn.template = function (template, webComponent) {
 };
 
 jQuery.fn.slot = function (queryOrElem, slotName) {
+    const shadowRoot = this.get(0).shadowRoot;
+    if (shadowRoot) {
+        throw new Error('Current element doesn\'t have a shadowroot!');
+    }
     if (queryOrElem instanceof jQuery) {
-        if(slotName){
+        if (slotName) {
             queryOrElem = queryOrElem.attr("slot", slotName);
         }
-        return this.append(queryOrElem);
+        return this.append(queryOrElem.clone());
     } else {
-        const shadowRoot = this.get(0).shadowRoot;
-        if (shadowRoot) {
-            const slots = shadowRoot.querySelectorAll(queryOrElem || 'slot');
-            const allNodes = [];
-            slots.forEach(slot => {
-                slot.assignedNodes().forEach(node => {
-                    allNodes.push(node);
-                });
+        const slots = shadowRoot.querySelectorAll(queryOrElem || 'slot');
+        const allNodes = [];
+        slots.forEach(slot => {
+            slot.assignedNodes().forEach(node => {
+                allNodes.push(node);
             });
-            return $(allNodes);
-        }
-        throw new Error('Current element doesn\'t have a shadowroot!');
+        });
+        return $(allNodes);
     }
 };
 
