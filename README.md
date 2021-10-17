@@ -129,7 +129,7 @@ async connectedCallback() {
 }
 ```
 
-## Define web-compoents using fluent builder
+## Define web-components using fluent builder
 
 Since v1.1.0, web components can be defined using a fluent builder:
 
