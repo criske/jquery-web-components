@@ -129,3 +129,52 @@ async connectedCallback() {
 }
 ```
 
+## Define web-compoents using fluent builder
+
+Since v1.1.0 web components can be defined using a fluent builder:
+
+```javascript
+$wc()
+    .template('<p>')
+    .onCreate(function () { this.hello = "Hello World"; })
+    .connectedCallback(function ($host) { $host.find('p').text(this.hello); })
+    .watchAttr("color")
+    .attributeChangedCallback(($host, name, old, neu) => {
+        if(name === 'color'){
+            $host.find('p').css('color', neu);
+        }
+    })
+    .extend({
+        changeMessage: async function (newMessage) {
+            const $host = await this.$host;
+            $host.find('p').text(`"${this.hello}" changed with "${newMessage}"`);
+        }
+    })
+    .define('fluent-component');
+```
+
+```javascript
+$(document).ready(() => {
+    $('button[is=fancy-button]').click(() => {
+        $('fluent-component').get(0).changeMessage("Hello universe!");
+    });
+    $('#btn-color').click(() => {
+        const randomColor = Math.floor(Math.random()*16777215).toString(16);
+        $('fluent-component').attr('color', '#'+randomColor);
+    });
+});
+```
+
+For callbacks, arrow or anon functions can be used. Use anon functions if you want to access
+the webcomponent's scope, besides `$host` provided as arg.
+
+In the above example see how `this.hello` is available in any callback. (this would not be possible if 
+callback was arrow). But of course if only `$host` is needed, one can use just arrow instead.
+
+The functions provided to `extend` object argument should never be arrows. These are attached to webcomponent's `prototype`. See above how we access `changeMessage`.
+
+Extending native html elements with fluent builder is simple:
+```javascript
+$wc(HTMLButtonElement).define('fluent-button', {extends : 'button'});
+```
+

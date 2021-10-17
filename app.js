@@ -26,7 +26,7 @@ class FancyButton extends HTMLButtonElement {
 
     constructor() {
         super();
-        $(this).css('background-color', 'yellow').text("Fancy Button");
+        $(this).css('background-color', 'yellow');
     }
 }
 
@@ -61,11 +61,34 @@ customElements.define('my-other-component', MyOtherComponent);
 customElements.define('my-paragraph', MyParagraph);
 customElements.define('fancy-button', FancyButton, { extends: 'button' });
 
+$wc()
+    .template('<p>')
+    .onCreate(function () { this.hello = "Hello World"; })
+    .connectedCallback(function ($host) { $host.find('p').text(this.hello); })
+    .watchAttr("color")
+    .attributeChangedCallback(($host, name, old, neu) => {
+        if(name === 'color'){
+            $host.find('p').css('color', neu);
+        }
+    })
+    .extend({
+        changeMessage: async function (newMessage) {
+            const $host = await this.$host;
+            $host.find('p').text(`"${this.hello}" changed with "${newMessage}"`);
+        }
+    })
+    .define('fluent-component');
+
+$wc(HTMLButtonElement).define('fluent-button', {extends : 'button'});
+
 $(document).ready(() => {
-    const button = $('<button is="fancy-button">')
-        .text('Fency Button')
-        .click(() => alert("Hello from document"));
-    $('body').append(button);
+    $('button[is=fancy-button]').click(() => {
+        $('fluent-component').get(0).changeMessage("Hello universe!");
+    });
+    $('button[is=fluent-button]').click(() => {
+        const randomColor = Math.floor(Math.random()*16777215).toString(16);
+        $('fluent-component').attr('color', '#'+randomColor);
+    });
 });
 
 
