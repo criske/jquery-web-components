@@ -65,12 +65,11 @@ $wc()
     .template('<p>')
     .onCreate(function () { this.hello = "Hello World"; })
     .connectedCallback(function ($host) { $host.find('p').text(this.hello); })
-    .watchAttr("color")
-    .attributeChangedCallback(($host, name, old, neu) => {
-        if(name === 'color'){
-            $host.find('p').css('color', neu);
+    .attributeChangedCallback(($host, changed) => {
+        if(changed.name === 'color'){
+            $host.find('p').css('color', changed.newValue);
         }
-    })
+    }, ['color'])
     .extend({
         changeMessage: async function (newMessage) {
             const $host = await this.$host;
@@ -79,16 +78,21 @@ $wc()
     })
     .define('fluent-component');
 
-$wc(HTMLButtonElement).define('fluent-button', {extends : 'button'});
+$wc(HTMLButtonElement).define('fluent-button', 'button');
 
-$(document).ready(() => {
+$(document).ready(async () => {
     $('button[is=fancy-button]').click(() => {
-        $('fluent-component').get(0).changeMessage("Hello universe!");
+        $('fluent-component').changeMessage("Hello universe!");
     });
     $('button[is=fluent-button]').click(() => {
         const randomColor = Math.floor(Math.random()*16777215).toString(16);
         $('fluent-component').attr('color', '#'+randomColor);
     });
+
+    const $host = await $('fluent-component').$host();
+
+    $host.find('p').css('outline', '1px solid red');
+    console.log($('fluent-component').$shr().getSelection());
 });
 
 
