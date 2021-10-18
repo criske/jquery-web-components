@@ -3,11 +3,11 @@
 A simple way to integrate jquery with [native web-components](https://developer.mozilla.org/en-US/docs/Web/Web_Components)
 
 Download:
-[1.2.0](https://raw.githubusercontent.com/criske/jquery-web-components/main/v/jwc-1.2.0.js) 
+[1.2.1](https://raw.githubusercontent.com/criske/jquery-web-components/main/v/jwc-1.2.1.js) 
 
 CDN (JSDELIVR)
-[1.2.0](https://cdn.jsdelivr.net/gh/criske/jquery-web-components@main/v/jwc-1.2.0.js) 
-[1.2.0-minified](https://cdn.jsdelivr.net/gh/criske/jquery-web-components@main/v/jwc-1.2.0.min.js)
+[1.2.1](https://cdn.jsdelivr.net/gh/criske/jquery-web-components@main/v/jwc-1.2.1.js) 
+[1.2.1-minified](https://cdn.jsdelivr.net/gh/criske/jquery-web-components@main/v/jwc-1.2.1.min.js)
 
 ```javascript
 $wc()
